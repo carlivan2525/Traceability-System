@@ -7,12 +7,22 @@
   <script src="https://unpkg.com/html5-qrcode" defer></script>
 </head>
 <body id="station-page">
-  <header>
-    <div class="header-content">
-      <h1>Station 1 - PCB Pairing (Operator)</h1>
+<header>
+  <div class="header-content">
+    <h1>Station 1 - PCB Pairing (Operator)</h1>
+    <div style="display: flex; gap: 10px; align-items: center;">
       <button onclick="logout()">Logout</button>
+      <div class="dropdown">
+        <button class="dropbtn">Options ⬇️</button>
+        <div class="dropdown-content">
+          <a href="daily-reports.html">📊 Daily Reports</a>
+          <a href="guide.html">📘 Guide</a>
+        </div>
+      </div>
     </div>
-  </header>
+  </div>
+</header>
+
 
   <div class="container">
     <!-- QR Scanner Card -->
