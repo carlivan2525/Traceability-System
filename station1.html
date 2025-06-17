@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Station 1 - PCB Pairing</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="station1.css" />
   <script src="https://unpkg.com/html5-qrcode" defer></script>
 </head>
 <body id="station-page">
@@ -25,32 +25,33 @@
 
 
   <div class="container">
-    <!-- QR Scanner Card -->
-    <div class="card">
-      <h2>📷 QR Code Scanner</h2>
-      <div id="qr-reader" style="width: 100%"></div>
-      <p><strong>Scanned Data:</strong> <span id="qr-result">None</span></p>
-    </div>
+<div class="top-section">
+      <!-- Left: QR Scanner -->
+      <div class="card left-panel">
+        <h2>📷 QR Code Scanner</h2>
+        <div id="qr-reader" style="width: 100%; height: 220px;"></div>
+        <p><strong>Scanned Data:</strong> <span id="qr-result">None</span></p>
+      </div>
 
-    <!-- Form Section -->
-    <div class="card">
-      <h2>Input Unit Info</h2>
-      <form id="unitForm">
-        <input type="text" id="model" placeholder="Model" required />
-        <input type="text" id="revision" placeholder="Revision" required />
-        <input type="text" id="baseUnitKittingNo" placeholder="Base Unit Kitting No." required />
-        <input type="text" id="assemblyNo" placeholder="Assembly No." required />
-        <input type="text" id="deviceSerialNo" placeholder="Device Serial No." required />
-        <input type="text" id="accessoryKittingNo" placeholder="Accessory Kitting No." required />
-
-        <select id="status">
-          <option value="In Progress">In Progress</option>
-          <option value="Done">Done</option>
-        </select>
-        <input type="text" id="remarks" placeholder="Remarks (optional)" />
-        <button type="submit">Submit Unit</button>
-        <button type="button" id="cancelEditBtn" style="display:none; margin-top:10px;">Cancel Edit</button>
-      </form>
+      <!-- Right: Form -->
+      <div class="card right-panel">
+        <h2>Input Unit Info</h2>
+        <form id="unitForm">
+          <input type="text" id="model" placeholder="Model" required />
+          <input type="text" id="revision" placeholder="Revision" required />
+          <input type="text" id="baseUnitKittingNo" placeholder="Base Unit Kitting No." required />
+          <input type="text" id="assemblyNo" placeholder="Assembly No." required />
+          <input type="text" id="deviceSerialNo" placeholder="Device Serial No." required />
+          <input type="text" id="accessoryKittingNo" placeholder="Accessory Kitting No." required />
+          <select id="status">
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+          </select>
+          <input type="text" id="remarks" placeholder="Remarks (optional)" />
+          <button type="submit">Submit Unit</button>
+          <button type="button" id="cancelEditBtn" style="display:none; margin-top:10px;">Cancel Edit</button>
+        </form>
+      </div>
     </div>
 
     <!-- Summary Section -->
