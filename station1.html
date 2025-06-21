@@ -23,221 +23,236 @@
   </div>
 </header>
 
-
-  <div class="container">
-<div class="top-section">
-      <!-- Left: QR Scanner -->
-      <div class="card left-panel">
-        <h2>📷 QR Code Scanner</h2>
-        <div id="qr-reader" style="width: 100%; height: 220px;"></div>
-        <p><strong>Scanned Data:</strong> <span id="qr-result">None</span></p>
-      </div>
-
-      <!-- Right: Form -->
-      <div class="card right-panel">
-        <h2>Input Unit Info</h2>
-        <form id="unitForm">
-          <input type="text" id="model" placeholder="Model" required />
-          <input type="text" id="revision" placeholder="Revision" required />
-          <input type="text" id="baseUnitKittingNo" placeholder="Base Unit Kitting No." required />
-          <input type="text" id="assemblyNo" placeholder="Assembly No." required />
-          <input type="text" id="deviceSerialNo" placeholder="Device Serial No." required />
-          <input type="text" id="accessoryKittingNo" placeholder="Accessory Kitting No." required />
-          <select id="status">
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-          <input type="text" id="remarks" placeholder="Remarks (optional)" />
-          <button type="submit">Submit Unit</button>
-          <button type="button" id="cancelEditBtn" style="display:none; margin-top:10px;">Cancel Edit</button>
-        </form>
-      </div>
+<div class="container">
+  <div class="top-section">
+    <!-- Left: QR Scanner -->
+    <div class="card left-panel">
+      <h2>📷 QR Code Scanner</h2>
+      <div id="qr-reader" style="width: 100%; height: 220px;"></div>
     </div>
 
-    <!-- Summary Section -->
-    <div class="card">
-      <h3>📋 Today's Completed Units</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Model</th>
-            <th>Revision</th>
-            <th>Base Unit Kitting No.</th>
-            <th>Assembly No.</th>
-            <th>Device Serial No.</th>
-            <th>Accessory Kitting No.</th>
-            <th>Status</th>
-            <th>Remarks</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="unitTableBody"></tbody>
-      </table>
-    </div>
+    <!-- Right: Form -->
+    <div class="card right-panel">
+      <h2>Input Unit Info</h2>
+      <form id="unitForm">
+  <input type="text" id="model" placeholder="Model" required />
+  <input type="text" id="revision" placeholder="Revision" />
+  <input type="text" id="baseUnitKittingNo" placeholder="Base Unit Kitting No." />
+  <input type="text" id="assemblyNo" placeholder="Assembly No." />
+  <input type="text" id="deviceSerialNo" placeholder="Device Serial No." />
+  <input type="text" id="accessoryKittingNo" placeholder="Accessory Kitting No." />
+  <select id="status">
+    <option value="In Progress">In Progress</option>
+    <option value="Done">Done</option>
+  </select>
+  <input type="text" id="remarks" placeholder="Remarks (optional)" />
+  <button type="submit">Submit Unit</button>
+  <button type="button" id="cancelEditBtn" style="display:none; margin-top:10px;">Cancel Edit</button>
+</form>
 
-    <div class="card">
-      <h3>📈 Shift Status</h3>
-      <p id="shiftSummary">Completed: 0 | In Progress: 0</p>
-    </div>
-
-    <div class="card">
-      <h3>🔁 Unit History</h3>
-      <ul id="unitHistory"></ul>
-    </div>
-
-    <div class="card">
-      <h3>👤 Account History</h3>
-      <p>Logged in as: <strong>Operator</strong> (Station 1)</p>
-      <ul id="accountHistory">
-        <li>Logged in</li>
-      </ul>
     </div>
   </div>
 
-  <script>
-    let unitHistory = [];
-    let editIndex = -1;
-    const unitForm = document.getElementById('unitForm');
-    const tbody = document.getElementById('unitTableBody');
-    const historyList = document.getElementById('unitHistory');
-    const cancelEditBtn = document.getElementById('cancelEditBtn');
-    const shiftSummary = document.getElementById('shiftSummary');
-    const accountHistory = document.getElementById('accountHistory');
+  <!-- Summary Section -->
+  <div class="card">
+    <h3>📋 Today's Completed Units</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Revision</th>
+          <th>Base Unit Kitting No.</th>
+          <th>Assembly No.</th>
+          <th>Device Serial No.</th>
+          <th>Accessory Kitting No.</th>
+          <th>Status</th>
+          <th>Remarks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="unitTableBody"></tbody>
+    </table>
+  </div>
 
-    unitForm.addEventListener('submit', function (event) {
-      event.preventDefault();
+  <div class="card">
+    <h3>📈 Shift Status</h3>
+    <p id="shiftSummary">Completed: 0 | In Progress: 0</p>
+  </div>
 
-      const model = modelInput.value.trim();
-      const revision = revisionInput.value.trim();
-      const baseUnit = baseUnitInput.value.trim();
-      const assemblyNo = assemblyNoInput.value.trim();
-      const deviceSerial = deviceSerialInput.value.trim();
-      const accessoryKitting = accessoryKittingInput.value.trim();
-      const status = statusSelect.value;
-      const remarks = remarksInput.value.trim();
+  <div class="card">
+    <h3>🔁 Unit History</h3>
+    <ul id="unitHistory"></ul>
+  </div>
 
-      const summary = `Unit ${model} (${assemblyNo}) - ${status}${remarks ? " | Remarks: " + remarks : ""}`;
+  <div class="card">
+    <h3>👤 Account History</h3>
+    <p>Logged in as: <strong>Operator</strong> (Station 1)</p>
+    <ul id="accountHistory">
+      <li>Logged in</li>
+    </ul>
+  </div>
+</div>
 
-      if (editIndex === -1) {
-        addUnitRow(model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks);
-        unitHistory.push(summary);
-        addAccountLog(`Submitted ${summary}`);
-      } else {
-        updateUnitRow(editIndex, model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks);
-        unitHistory[editIndex] = summary;
-        addAccountLog(`Edited ${summary}`);
-        cancelEditBtn.style.display = 'none';
-        unitForm.querySelector('button[type="submit"]').textContent = 'Submit Unit';
-        editIndex = -1;
-      }
+<script>
+  let unitHistory = [];
+  let editIndex = -1;
 
-      updateUnitHistory();
-      updateShiftSummary();
-      unitForm.reset();
-    });
+  const unitForm = document.getElementById('unitForm');
+  const tbody = document.getElementById('unitTableBody');
+  const historyList = document.getElementById('unitHistory');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+  const shiftSummary = document.getElementById('shiftSummary');
+  const accountHistory = document.getElementById('accountHistory');
 
-    const modelInput = document.getElementById('model');
-    const revisionInput = document.getElementById('revision');
-    const baseUnitInput = document.getElementById('baseUnitKittingNo');
-    const assemblyNoInput = document.getElementById('assemblyNo');
-    const deviceSerialInput = document.getElementById('deviceSerialNo');
-    const accessoryKittingInput = document.getElementById('accessoryKittingNo');
-    const statusSelect = document.getElementById('status');
-    const remarksInput = document.getElementById('remarks');
+  const modelInput = document.getElementById('model');
+  const revisionInput = document.getElementById('revision');
+  const baseUnitInput = document.getElementById('baseUnitKittingNo');
+  const assemblyNoInput = document.getElementById('assemblyNo');
+  const deviceSerialInput = document.getElementById('deviceSerialNo');
+  const accessoryKittingInput = document.getElementById('accessoryKittingNo');
+  const statusSelect = document.getElementById('status');
+  const remarksInput = document.getElementById('remarks');
 
-    function addUnitRow(model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks) {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${model}</td>
-        <td>${revision}</td>
-        <td>${baseUnit}</td>
-        <td>${assemblyNo}</td>
-        <td>${deviceSerial}</td>
-        <td>${accessoryKitting}</td>
-        <td><span class="status-badge ${status === 'Done' ? 'status-done' : 'status-inprogress'}">${status}</span></td>
-        <td>${remarks}</td>
-        <td><button class="editBtn">Edit</button></td>
-      `;
-      row.querySelector('.editBtn').addEventListener('click', () => loadRowToForm(row));
-      tbody.appendChild(row);
-    }
+  unitForm.addEventListener('submit', function (event) {
+    event.preventDefault();
 
-    function updateUnitRow(index, model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks) {
-      const row = tbody.rows[index];
-      row.cells[0].textContent = model;
-      row.cells[1].textContent = revision;
-      row.cells[2].textContent = baseUnit;
-      row.cells[3].textContent = assemblyNo;
-      row.cells[4].textContent = deviceSerial;
-      row.cells[5].textContent = accessoryKitting;
-      row.cells[6].innerHTML = `<span class="status-badge ${status === 'Done' ? 'status-done' : 'status-inprogress'}">${status}</span>`;
-      row.cells[7].textContent = remarks;
-    }
+    const model = modelInput.value.trim();
+    const revision = revisionInput.value.trim();
+    const baseUnit = baseUnitInput.value.trim();
+    const assemblyNo = assemblyNoInput.value.trim();
+    const deviceSerial = deviceSerialInput.value.trim();
+    const accessoryKitting = accessoryKittingInput.value.trim();
+    const status = statusSelect.value;
+    const remarks = remarksInput.value.trim();
 
-    function loadRowToForm(row) {
-      modelInput.value = row.cells[0].textContent;
-      revisionInput.value = row.cells[1].textContent;
-      baseUnitInput.value = row.cells[2].textContent;
-      assemblyNoInput.value = row.cells[3].textContent;
-      deviceSerialInput.value = row.cells[4].textContent;
-      accessoryKittingInput.value = row.cells[5].textContent;
-      statusSelect.value = row.cells[6].textContent;
-      remarksInput.value = row.cells[7].textContent;
+    const summary = `Unit ${model} (${assemblyNo}) - ${status}${remarks ? " | Remarks: " + remarks : ""}`;
 
-      editIndex = Array.from(tbody.rows).indexOf(row);
-      cancelEditBtn.style.display = 'inline-block';
-      unitForm.querySelector('button[type="submit"]').textContent = 'Save Changes';
-    }
-
-    cancelEditBtn.addEventListener('click', () => {
-      unitForm.reset();
-      editIndex = -1;
+    if (editIndex === -1) {
+      addUnitRow(model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks);
+      unitHistory.push(summary);
+      addAccountLog(`Submitted ${summary}`);
+    } else {
+      updateUnitRow(editIndex, model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks);
+      unitHistory[editIndex] = summary;
+      addAccountLog(`Edited ${summary}`);
       cancelEditBtn.style.display = 'none';
       unitForm.querySelector('button[type="submit"]').textContent = 'Submit Unit';
-    });
+      editIndex = -1;
+    }
 
-    function updateUnitHistory() {
-      historyList.innerHTML = '';
-      unitHistory.forEach(unit => {
-        const li = document.createElement('li');
-        li.textContent = unit;
-        historyList.appendChild(li);
+    updateUnitHistory();
+    updateShiftSummary();
+    unitForm.reset();
+  });
+
+  function addUnitRow(model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${model}</td>
+      <td>${revision}</td>
+      <td>${baseUnit}</td>
+      <td>${assemblyNo}</td>
+      <td>${deviceSerial}</td>
+      <td>${accessoryKitting}</td>
+      <td><span class="status-badge ${status === 'Done' ? 'status-done' : 'status-inprogress'}">${status}</span></td>
+      <td>${remarks}</td>
+      <td><button class="editBtn">Edit</button></td>
+    `;
+    row.querySelector('.editBtn').addEventListener('click', () => loadRowToForm(row));
+    tbody.appendChild(row);
+  }
+
+  function updateUnitRow(index, model, revision, baseUnit, assemblyNo, deviceSerial, accessoryKitting, status, remarks) {
+    const row = tbody.rows[index];
+    row.cells[0].textContent = model;
+    row.cells[1].textContent = revision;
+    row.cells[2].textContent = baseUnit;
+    row.cells[3].textContent = assemblyNo;
+    row.cells[4].textContent = deviceSerial;
+    row.cells[5].textContent = accessoryKitting;
+    row.cells[6].innerHTML = `<span class="status-badge ${status === 'Done' ? 'status-done' : 'status-inprogress'}">${status}</span>`;
+    row.cells[7].textContent = remarks;
+  }
+
+  function loadRowToForm(row) {
+    modelInput.value = row.cells[0].textContent;
+    revisionInput.value = row.cells[1].textContent;
+    baseUnitInput.value = row.cells[2].textContent;
+    assemblyNoInput.value = row.cells[3].textContent;
+    deviceSerialInput.value = row.cells[4].textContent;
+    accessoryKittingInput.value = row.cells[5].textContent;
+    statusSelect.value = row.cells[6].textContent;
+    remarksInput.value = row.cells[7].textContent;
+
+    editIndex = Array.from(tbody.rows).indexOf(row);
+    cancelEditBtn.style.display = 'inline-block';
+    unitForm.querySelector('button[type="submit"]').textContent = 'Save Changes';
+  }
+
+  cancelEditBtn.addEventListener('click', () => {
+    unitForm.reset();
+    editIndex = -1;
+    cancelEditBtn.style.display = 'none';
+    unitForm.querySelector('button[type="submit"]').textContent = 'Submit Unit';
+  });
+
+  function updateUnitHistory() {
+    historyList.innerHTML = '';
+    unitHistory.forEach(unit => {
+      const li = document.createElement('li');
+      li.textContent = unit;
+      historyList.appendChild(li);
+    });
+  }
+
+  function updateShiftSummary() {
+    const rows = Array.from(tbody.rows);
+    const completed = rows.filter(row => row.cells[6].textContent.includes('Done')).length;
+    const inProgress = rows.length - completed;
+    shiftSummary.textContent = `Completed: ${completed} | In Progress: ${inProgress}`;
+  }
+
+  function addAccountLog(message) {
+    const timestamp = new Date().toLocaleString();
+    const li = document.createElement('li');
+    li.textContent = `${message} @ ${timestamp}`;
+    accountHistory.appendChild(li);
+  }
+
+  function logout() {
+    window.location.href = 'index.html';
+  }
+
+  // QR Code Reader Init
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.Html5Qrcode) {
+      const qr = new Html5Qrcode("qr-reader");
+      qr.start({ facingMode: "environment" }, {
+        fps: 10,
+        qrbox: 250
+      }, qrCodeMessage => {
+        try {
+          const data = JSON.parse(qrCodeMessage);
+
+          // Auto-fill form
+          modelInput.value = data.model || '';
+          revisionInput.value = data.revision || '';
+          baseUnitInput.value = data.baseUnitKittingNo || '';
+          assemblyNoInput.value = data.assemblyNo || '';
+          deviceSerialInput.value = data.deviceSerialNo || '';
+          accessoryKittingInput.value = data.accessoryKittingNo || '';
+          statusSelect.value = data.status || 'In Progress';
+          remarksInput.value = data.remarks || '';
+
+        } catch (e) {
+          alert("Invalid QR Code format.");
+          console.error("QR parse error:", e);
+        }
+      }, error => {
+        // ignore scanning errors
       });
     }
-
-    function updateShiftSummary() {
-      const rows = Array.from(tbody.rows);
-      const completed = rows.filter(row => row.cells[6].textContent.includes('Done')).length;
-      const inProgress = rows.length - completed;
-      shiftSummary.textContent = `Completed: ${completed} | In Progress: ${inProgress}`;
-    }
-
-    function addAccountLog(message) {
-      const timestamp = new Date().toLocaleString();
-      const li = document.createElement('li');
-      li.textContent = `${message} @ ${timestamp}`;
-      accountHistory.appendChild(li);
-    }
-
-    function logout() {
-      window.location.href = 'index.html';
-    }
-
-    // QR Code Reader Init
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.Html5Qrcode) {
-        const qr = new Html5Qrcode("qr-reader");
-        qr.start({ facingMode: "environment" }, {
-          fps: 10,
-          qrbox: 250
-        }, qrCodeMessage => {
-          document.getElementById('qr-result').textContent = qrCodeMessage;
-          // Optionally parse and autofill fields here
-        }, error => {
-          // ignore
-        });
-      }
-    });
-  </script>
+  });
+</script>
 </body>
 </html>

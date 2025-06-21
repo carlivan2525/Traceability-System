@@ -80,13 +80,16 @@
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        if (role === "admin" && email === "admin@mkff.com") {
-          window.location.href = "admin-dashboard.html";
-        } else if (role === "operator" && email === "operator@mkff.com") {
-          window.location.href = "station1.html";
-        } else {
-          errorMessage.textContent = "Incorrect role for this email.";
-        }
+      if (role === "admin" && email === "admin@mkff.com") {
+        window.location.href = "admin-dashboard.html";
+      } else if (role === "operator" && email === "operator@mkff.com") {
+        window.location.href = "station1.html";
+      } else if (role === "operator" && email === "qroperator@mkff.com") {
+        window.location.href = "qr-generator.html";
+      } else {
+        errorMessage.textContent = "Incorrect role for this email.";
+      }
+
       })
       .catch((error) => {
         errorMessage.textContent = "Login failed: " + error.message;
